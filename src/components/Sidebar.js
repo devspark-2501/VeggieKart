@@ -15,14 +15,8 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-20 bg-emerald-950 flex flex-col items-center py-6 justify-between rounded-r-3xl shadow-xl h-screen sticky top-0 border-r border-emerald-900">
-      {/* Brand Logo Mini */}
-      <div className="bg-emerald-600 p-2.5 rounded-2xl text-white shadow-md mb-8">
-        <Sparkles className="w-5 h-5 text-amber-300" />
-      </div>
-
-      {/* 4 Navigation Icons */}
-      <nav className="flex flex-col gap-6 w-full px-3">
+    <aside className="my-auto ml-6 flex flex-col items-center py-5 px-3 bg-white rounded-full shadow-2xl border border-emerald-100 sticky top-6 h-fit">
+      <nav className="flex flex-col items-center gap-5">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -32,24 +26,21 @@ export default function Sidebar() {
               href={item.href}
               onClick={() => setActiveTab(item.id)}
               title={item.label}
-              className={`flex items-center justify-center p-3.5 rounded-2xl transition-all group relative cursor-pointer ${
+              className={`p-3.5 rounded-full transition-all flex items-center justify-center cursor-pointer relative group ${
                 isActive
-                  ? "bg-amber-500 text-gray-950 shadow-lg font-bold"
-                  : "text-emerald-300 hover:bg-emerald-900 hover:text-amber-300"
+                  ? "bg-emerald-950 text-amber-400 shadow-lg scale-105"
+                  : "text-gray-500 hover:text-emerald-700 hover:bg-emerald-50"
               }`}
             >
               <Icon className="w-5 h-5" />
               {/* Tooltip on hover */}
-              <span className="absolute left-20 bg-emerald-900 text-white text-[10px] px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow">
+              <span className="absolute left-16 bg-emerald-950 text-white text-[10px] px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow">
                 {item.label}
               </span>
             </Link>
           );
         })}
       </nav>
-
-      {/* Bottom status dot */}
-      <div className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></div>
     </aside>
   );
 }
