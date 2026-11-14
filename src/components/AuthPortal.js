@@ -23,7 +23,6 @@ export default function AuthPortal() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Temporary frontend routing (we will hook this up to FastAPI + MongoDB next!)
     if (role === "seller") {
       router.push("/admin");
     } else {
@@ -36,13 +35,13 @@ export default function AuthPortal() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-100 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-100 flex flex-col items-center justify-center p-3">
       {/* Brand Header */}
-      <div className="flex items-center gap-2 mb-6">
-        <div className="bg-emerald-600 p-2.5 rounded-xl text-white shadow-md">
-          <Leaf className="w-7 h-7" />
+      <div className="flex items-center gap-2 mb-3">
+        <div className="bg-emerald-600 p-2 rounded-xl text-white shadow-md">
+          <Leaf className="w-5 h-5" />
         </div>
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
           Veggie<span className="text-emerald-600">Kart</span>
         </h1>
       </div>
@@ -50,21 +49,21 @@ export default function AuthPortal() {
       {/* Main Card */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-emerald-100 overflow-hidden">
         {/* TOP ROLE QUESTION BANNER */}
-        <div className="bg-emerald-900 text-white p-4 text-center">
-          <p className="text-xs uppercase tracking-wider text-emerald-300 font-semibold mb-2">
+        <div className="bg-emerald-900 text-white p-3 text-center">
+          <p className="text-[11px] uppercase tracking-wider text-emerald-300 font-semibold mb-1.5">
             Who are you joining as today?
           </p>
           <div className="grid grid-cols-2 gap-2 bg-emerald-950/60 p-1 rounded-xl">
             <button
               type="button"
               onClick={() => setRole("consumer")}
-              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-semibold transition-all ${
+              className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
                 role === "consumer"
                   ? "bg-emerald-500 text-white shadow"
                   : "text-emerald-200 hover:text-white"
               }`}
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-3.5 h-3.5" />
               Consumer
             </button>
 
@@ -72,24 +71,24 @@ export default function AuthPortal() {
               type="button"
               onClick={() => {
                 setRole("seller");
-                setIsLogin(false); // Default sellers to Register if new
+                setIsLogin(false);
               }}
-              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-semibold transition-all ${
+              className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
                 role === "seller"
                   ? "bg-amber-500 text-gray-950 shadow"
                   : "text-emerald-200 hover:text-white"
               }`}
             >
-              <Store className="w-4 h-4" />
+              <Store className="w-3.5 h-3.5" />
               Seller / Vendor
             </button>
           </div>
         </div>
 
         {/* FORM SECTION */}
-        <div className="p-6 sm:p-8">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">
+        <div className="p-5 sm:p-6">
+          <div className="mb-4">
+            <h2 className="text-xl font-bold text-gray-800">
               {role === "seller"
                 ? isLogin
                   ? "Vendor Portal Login"
@@ -98,18 +97,18 @@ export default function AuthPortal() {
                 ? "Welcome Back!"
                 : "Create Consumer Account"}
             </h2>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 mt-0.5">
               {role === "seller"
                 ? "Manage your harvest inventory, daily mandi rates, and incoming orders."
                 : "Get farm-fresh vegetables delivered directly from local vendors."}
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3">
             {/* Full Name (Only on Register) */}
             {!isLogin && (
               <div>
-                <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">
+                <label className="block text-[10px] font-semibold uppercase text-gray-600 mb-0.5">
                   Full Name
                 </label>
                 <input
@@ -119,7 +118,7 @@ export default function AuthPortal() {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="Ramesh Kumar"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-gray-800"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-xs text-gray-800"
                 />
               </div>
             )}
@@ -128,7 +127,7 @@ export default function AuthPortal() {
             {role === "seller" && !isLogin && (
               <>
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">
+                  <label className="block text-[10px] font-semibold uppercase text-gray-600 mb-0.5">
                     Shop / Farm Name
                   </label>
                   <input
@@ -138,11 +137,11 @@ export default function AuthPortal() {
                     value={formData.shopName}
                     onChange={handleChange}
                     placeholder="Green Valley Fresh Veggies"
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none text-gray-800"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none text-xs text-gray-800"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">
+                  <label className="block text-[10px] font-semibold uppercase text-gray-600 mb-0.5">
                     Market / Mandi Location
                   </label>
                   <input
@@ -152,7 +151,7 @@ export default function AuthPortal() {
                     value={formData.location}
                     onChange={handleChange}
                     placeholder="e.g., Bittan Market, Bhopal"
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none text-gray-800"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none text-xs text-gray-800"
                   />
                 </div>
               </>
@@ -160,7 +159,7 @@ export default function AuthPortal() {
 
             {/* Email */}
             <div>
-              <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">
+              <label className="block text-[10px] font-semibold uppercase text-gray-600 mb-0.5">
                 Email Address
               </label>
               <input
@@ -170,13 +169,13 @@ export default function AuthPortal() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-gray-800"
+                className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-xs text-gray-800"
               />
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">
+              <label className="block text-[10px] font-semibold uppercase text-gray-600 mb-0.5">
                 Password
               </label>
               <input
@@ -186,20 +185,20 @@ export default function AuthPortal() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-gray-800"
+                className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-xs text-gray-800"
               />
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              className={`w-full py-3 rounded-xl font-bold text-white shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              className={`w-full py-2.5 rounded-xl font-bold text-white shadow-md transition-all flex items-center justify-center gap-2 text-xs cursor-pointer ${
                 role === "seller"
                   ? "bg-amber-600 hover:bg-amber-700"
                   : "bg-emerald-600 hover:bg-emerald-700"
               }`}
             >
-              <UserCheck className="w-5 h-5" />
+              <UserCheck className="w-4 h-4" />
               {isLogin
                 ? `Sign In as ${role === "seller" ? "Vendor" : "Consumer"}`
                 : `Register as ${role === "seller" ? "Vendor" : "Consumer"}`}
@@ -207,7 +206,7 @@ export default function AuthPortal() {
           </form>
 
           {/* Toggle Sign In / Register */}
-          <div className="mt-5 text-center text-sm text-gray-600">
+          <div className="mt-4 text-center text-xs text-gray-600">
             {isLogin ? "Don't have an account?" : "Already registered?"}{" "}
             <button
               type="button"
@@ -220,14 +219,14 @@ export default function AuthPortal() {
 
           {/* Guest Browsing Option (Only for Consumers) */}
           {role === "consumer" && (
-            <div className="mt-6 pt-5 border-t border-gray-100">
+            <div className="mt-4 pt-3 border-t border-gray-100">
               <button
                 type="button"
                 onClick={handleGuestBrowse}
-                className="w-full py-2.5 px-4 rounded-xl border-2 border-dashed border-emerald-300 text-emerald-800 font-semibold text-sm hover:bg-emerald-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-2 px-3 rounded-xl border-2 border-dashed border-emerald-300 text-emerald-800 font-semibold text-xs hover:bg-emerald-50 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 Continue Browsing Veggies Without Login
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
           )}
