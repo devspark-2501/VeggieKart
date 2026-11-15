@@ -8,8 +8,8 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function AuthPortal() {
   const router = useRouter();
-  const [role, setRole] = useState("consumer"); // "consumer" or "seller"
-  const [isLogin, setIsLogin] = useState(true); // true = Sign In, false = Register
+  const [role, setRole] = useState("consumer");
+  const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -19,6 +19,8 @@ export default function AuthPortal() {
     password: "",
     shopName: "",
     location: "",
+    upiId: "",
+    phone: "",
   });
 
   const handleChange = (e) => {
@@ -44,6 +46,8 @@ export default function AuthPortal() {
           role: role,
           shopName: role === "seller" ? formData.shopName : null,
           location: role === "seller" ? formData.location : null,
+          upiId: role === "seller" ? formData.upiId : null,
+          phone: role === "seller" ? formData.phone : null,
         };
 
     try {
@@ -59,18 +63,18 @@ export default function AuthPortal() {
         throw new Error(data.detail || "Authentication failed. Please try again.");
       }
 
-      // Save active session to localStorage
       const userSession = {
         name: data.name || formData.name,
         email: formData.email,
         role: data.role || role,
         shopName: data.shopName || formData.shopName || null,
+        upiId: data.upiId || formData.upiId || null,
+        phone: data.phone || formData.phone || null,
         userId: data.user_id || null,
         isGuest: false,
       };
       localStorage.setItem("veggiekart_user", JSON.stringify(userSession));
 
-      // Route based on confirmed role from backend
       if (userSession.role === "seller") {
         router.push("/admin");
       } else {
@@ -93,8 +97,7 @@ export default function AuthPortal() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-100 flex flex-col items-center justify-center p-3">
-      {/* Brand Header */}
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 mb-2.5">
         <div className="bg-emerald-600 p-2 rounded-xl text-white shadow-md">
           <Leaf className="w-5 h-5" />
         </div>
@@ -103,11 +106,9 @@ export default function AuthPortal() {
         </h1>
       </div>
 
-      {/* Main Card */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-emerald-100 overflow-hidden">
-        {/* TOP ROLE QUESTION BANNER */}
-        <div className="bg-emerald-900 text-white p-3 text-center">
-          <p className="text-[11px] uppercase tracking-wider text-emerald-300 font-semibold mb-1.5">
+        <div className="bg-emerald-900 text-white p-2.5 text-center">
+          <p className="text-[10px] uppercase tracking-wider text-emerald-300 font-semibold mb-1.5">
             Who are you joining as today?
           </p>
           <div className="grid grid-cols-2 gap-2 bg-emerald-950/60 p-1 rounded-xl">
@@ -117,7 +118,7 @@ export default function AuthPortal() {
                 setRole("consumer");
                 setError("");
               }}
-              className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 role === "consumer"
                   ? "bg-emerald-500 text-white shadow"
                   : "text-emerald-200 hover:text-white"
@@ -134,7 +135,7 @@ export default function AuthPortal() {
                 setIsLogin(false);
                 setError("");
               }}
-              className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 role === "seller"
                   ? "bg-amber-500 text-gray-950 shadow"
                   : "text-emerald-200 hover:text-white"
@@ -146,10 +147,9 @@ export default function AuthPortal() {
           </div>
         </div>
 
-        {/* FORM SECTION */}
-        <div className="p-5 sm:p-6">
+        <div className="p-4 sm:p-5">
           <div className="mb-3">
-            <h2 className="text-xl font-bold text-gray-800">
+            <h2 className="text-lg font-bold text-gray-800">
               {role === "seller"
                 ? isLogin
                   ? "Vendor Portal Login"
@@ -158,23 +158,21 @@ export default function AuthPortal() {
                 ? "Welcome Back!"
                 : "Create Consumer Account"}
             </h2>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="text-[11px] text-gray-500">
               {role === "seller"
-                ? "Manage your harvest inventory, daily mandi rates, and incoming orders."
+                ? "Add your stall and payment details to receive direct orders."
                 : "Get farm-fresh vegetables delivered directly from local vendors."}
             </p>
           </div>
 
-          {/* Error Alert Banner */}
           {error && (
-            <div className="mb-3 p-2.5 rounded-xl bg-red-50 border border-red-200 flex items-center gap-2 text-red-700 text-xs">
+            <div className="mb-2.5 p-2 rounded-xl bg-red-50 border border-red-200 flex items-center gap-2 text-red-700 text-xs">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-2.5">
-            {/* Full Name (Only on Register) */}
+          <form onSubmit={handleSubmit} className="space-y-2">
             {!isLogin && (
               <div>
                 <label className="block text-[10px] font-semibold uppercase text-gray-600 mb-0.5">
@@ -187,46 +185,77 @@ export default function AuthPortal() {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="Ramesh Kumar"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-xs text-gray-800"
+                  className="w-full px-3 py-1.5 rounded-xl border border-gray-200 focus:border-emerald-500 outline-none text-xs text-gray-800"
                 />
               </div>
             )}
 
-            {/* Seller Specific Fields */}
             {role === "seller" && !isLogin && (
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-[10px] font-semibold uppercase text-gray-600 mb-0.5">
-                    Shop / Farm Name
-                  </label>
-                  <input
-                    type="text"
-                    name="shopName"
-                    required
-                    value={formData.shopName}
-                    onChange={handleChange}
-                    placeholder="Green Valley Stall"
-                    className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none text-xs text-gray-800"
-                  />
+              <>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase text-gray-600 mb-0.5">
+                      Shop / Farm Name
+                    </label>
+                    <input
+                      type="text"
+                      name="shopName"
+                      required
+                      value={formData.shopName}
+                      onChange={handleChange}
+                      placeholder="Green Valley Stall"
+                      className="w-full px-3 py-1.5 rounded-xl border border-gray-200 focus:border-amber-500 outline-none text-xs text-gray-800"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase text-gray-600 mb-0.5">
+                      Mandi Location
+                    </label>
+                    <input
+                      type="text"
+                      name="location"
+                      required
+                      value={formData.location}
+                      onChange={handleChange}
+                      placeholder="Bittan Market, Bhopal"
+                      className="w-full px-3 py-1.5 rounded-xl border border-gray-200 focus:border-amber-500 outline-none text-xs text-gray-800"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-[10px] font-semibold uppercase text-gray-600 mb-0.5">
-                    Mandi Location
-                  </label>
-                  <input
-                    type="text"
-                    name="location"
-                    required
-                    value={formData.location}
-                    onChange={handleChange}
-                    placeholder="Bittan Market, Bhopal"
-                    className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none text-xs text-gray-800"
-                  />
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase text-gray-600 mb-0.5">
+                      UPI ID (For Payments)
+                    </label>
+                    <input
+                      type="text"
+                      name="upiId"
+                      required
+                      value={formData.upiId}
+                      onChange={handleChange}
+                      placeholder="ramesh@okicici"
+                      className="w-full px-3 py-1.5 rounded-xl border border-gray-200 focus:border-amber-500 outline-none text-xs text-gray-800"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase text-gray-600 mb-0.5">
+                      Mobile Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="9876543210"
+                      className="w-full px-3 py-1.5 rounded-xl border border-gray-200 focus:border-amber-500 outline-none text-xs text-gray-800"
+                    />
+                  </div>
                 </div>
-              </div>
+              </>
             )}
 
-            {/* Email */}
             <div>
               <label className="block text-[10px] font-semibold uppercase text-gray-600 mb-0.5">
                 Email Address
@@ -238,11 +267,10 @@ export default function AuthPortal() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-xs text-gray-800"
+                className="w-full px-3 py-1.5 rounded-xl border border-gray-200 focus:border-emerald-500 outline-none text-xs text-gray-800"
               />
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-[10px] font-semibold uppercase text-gray-600 mb-0.5">
                 Password
@@ -254,15 +282,14 @@ export default function AuthPortal() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-xs text-gray-800"
+                className="w-full px-3 py-1.5 rounded-xl border border-gray-200 focus:border-emerald-500 outline-none text-xs text-gray-800"
               />
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-2.5 rounded-xl font-bold text-white shadow-md transition-all flex items-center justify-center gap-2 text-xs cursor-pointer disabled:opacity-60 ${
+              className={`w-full py-2 rounded-xl font-bold text-white shadow-md transition-all flex items-center justify-center gap-2 text-xs cursor-pointer disabled:opacity-60 ${
                 role === "seller"
                   ? "bg-amber-600 hover:bg-amber-700"
                   : "bg-emerald-600 hover:bg-emerald-700"
@@ -284,8 +311,7 @@ export default function AuthPortal() {
             </button>
           </form>
 
-          {/* Toggle Sign In / Register */}
-          <div className="mt-3.5 text-center text-xs text-gray-600">
+          <div className="mt-3 text-center text-xs text-gray-600">
             {isLogin ? "Don't have an account?" : "Already registered?"}{" "}
             <button
               type="button"
@@ -299,13 +325,12 @@ export default function AuthPortal() {
             </button>
           </div>
 
-          {/* Guest Browsing Option (Only for Consumers) */}
           {role === "consumer" && (
-            <div className="mt-3.5 pt-3 border-t border-gray-100">
+            <div className="mt-3 pt-2.5 border-t border-gray-100">
               <button
                 type="button"
                 onClick={handleGuestBrowse}
-                className="w-full py-2 px-3 rounded-xl border-2 border-dashed border-emerald-300 text-emerald-800 font-semibold text-xs hover:bg-emerald-50 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full py-1.5 px-3 rounded-xl border-2 border-dashed border-emerald-300 text-emerald-800 font-semibold text-xs hover:bg-emerald-50 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 Continue Browsing Veggies Without Login
                 <ArrowRight className="w-3.5 h-3.5" />
