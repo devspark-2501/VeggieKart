@@ -8,6 +8,8 @@ class UserCreate(BaseModel):
     role: str  # "consumer" or "seller"
     shopName: Optional[str] = None
     location: Optional[str] = None
+    upiId: Optional[str] = None
+    phone: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: EmailStr
