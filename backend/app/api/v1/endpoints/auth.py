@@ -1,10 +1,9 @@
 from fastapi import APIRouter, HTTPException, status
 from app.models.user import UserCreate, UserLogin
 from app.core.database import db
-from passlib.context import CryptContext
+import bcrypt
 
 router = APIRouter()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 @router.post("/signup")
 async def signup(user: UserCreate):
@@ -16,8 +15,10 @@ async def signup(user: UserCreate):
             detail="Email already registered with VeggieKart!"
         )
     
-    # Hash password
-    hashed_password = pwd_context.hash(user.password)
+    # Hash password directly using bcrypt (truncating to 72 bytes safely)
+    pwd_bytes = user.password.encode('utf-8')
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(pwd_bytes, salt).decode('utf-8')
     
     user_dict = user.dict()
     user_dict["password"] = hashed_password
@@ -29,7 +30,9 @@ async def signup(user: UserCreate):
         "success": True,
         "message": f"Successfully registered as {user.role}!",
         "user_id": str(result.inserted_id),
-        "role": user.role
+        "role": user.role,
+        "name": user.name,
+        "shopName": user.shopName
     }
 
 @router.post("/login")
@@ -42,9 +45,13 @@ async def login(credentials: UserLogin):
             detail="Invalid email or password."
         )
     
-    # Verify password
-    valid_password = pwd_context.verify(credentials.password, user["password"])
-    if not valid_password:
+    # Verify password directly using bcrypt
+    password_match = bcrypt.checkpw(
+        credentials.password.encode('utf-8'),
+        user["password"].encode('utf-8')
+    )
+    
+    if not password_match:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password."
