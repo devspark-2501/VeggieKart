@@ -15,7 +15,7 @@ async def signup(user: UserCreate):
             detail="Email already registered with VeggieKart!"
         )
     
-    # Hash password directly using bcrypt (truncating to 72 bytes safely)
+    # Hash password directly using bcrypt (safely encoding utf-8)
     pwd_bytes = user.password.encode('utf-8')
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(pwd_bytes, salt).decode('utf-8')
@@ -32,7 +32,9 @@ async def signup(user: UserCreate):
         "user_id": str(result.inserted_id),
         "role": user.role,
         "name": user.name,
-        "shopName": user.shopName
+        "shopName": user.shopName,
+        "upiId": user.upiId,
+        "phone": user.phone
     }
 
 @router.post("/login")
@@ -62,5 +64,7 @@ async def login(credentials: UserLogin):
         "message": "Login successful!",
         "role": user["role"],
         "name": user["name"],
-        "shopName": user.get("shopName")
+        "shopName": user.get("shopName"),
+        "upiId": user.get("upiId"),
+        "phone": user.get("phone"),
     }
