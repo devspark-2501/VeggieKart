@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🥬 VeggieKart — Farm-to-Consumer E-Commerce Platform 🛒🚜
 
-## Getting Started
+> VeggieKart is a lightning-fast, role-based farm-to-consumer e-commerce platform bridging local mandi vendors and everyday shoppers with live MongoDB inventory, instant subtotal calculations, tiered delivery fees, direct UPI payments, and cash-on-delivery options! 🚀✨🌾
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 📂 Complete Project Folder Structure & Architecture
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+veggiekart/
+├── 📁 backend/                        # FastAPI Python Backend Service
+│   ├── 📁 app/
+│   │   ├── 📁 api/                    # API Route Handlers and Endpoints
+│   │   │   └── 📁 v1/
+│   │   │       ├── 📁 endpoints/
+│   │   │       │   ├── auth.py        # Handles user/vendor sign up, bcrypt hashing, and login
+│   │   │       │   ├── products.py    # Manages adding, listing, filtering, and deleting vendor items
+│   │   │       │   └── orders.py      # Processes consumer checkouts, order placement, and status updates
+│   │   ├── 📁 core/
+│   │   │   ├── config.py              # Loads environment variables and settings
+│   │   │   └── database.py            # Establishes asynchronous Motor connection to MongoDB
+│   │   ├── 📁 models/                 # Pydantic data validation schemas
+│   │   │   ├── order.py               # Defines schema for order items, totals, and delivery zones
+│   │   │   ├── product.py             # Defines schema for vegetable inventory and pricing
+│   │   │   └── user.py                # Defines schema for user credentials, roles, and vendor details
+│   │   └── main.py                    # Initializes FastAPI app, CORS middleware, and route routers
+│   ├── 📄 requirements.txt            # Python dependencies (FastAPI, Uvicorn, Motor, Pydantic, etc.)
+│   └── 📁 venv/                       # Local Python virtual environment container
+│
+└── 📁 veggiekart/                     # Next.js Frontend Application
+    ├── 📁 public/                     # Static assets and public images
+    ├── 📁 src/
+    │   ├── 📁 app/                    # Next.js App Router pages
+    │   │   ├── 📁 admin/
+    │   │   │   └── page.js            # Vendor admin dashboard for inventory management and orders
+    │   │   ├── 📁 shop/
+    │   │   │   └── page.js            # Consumer marketplace with search, cart, delivery fees, and checkout
+    │   │   ├── layout.js              # Global layout wrapper and font definitions
+    │   │   └── page.js                # Role-based authentication portal (Consumer/Vendor login & signup)
+    │   ├── 📁 components/             # Reusable UI components
+    │   │   ├── AuthPortal.js          # Authentication form handling signup/login states and roles
+    │   │   ├── SearchBar.js           # Real-time search component for filtering products and vendors
+    │   │   └── Sidebar.js             # Custom capsule-shaped floating navigation bar
+    │   └── 📁 styles/                 # Global Tailwind CSS styles and directives
+    ├── 📄 .env.local                  # Frontend environment configuration variables
+    ├── 📄 jsconfig.json               # JavaScript path aliasing configuration
+    ├── 📄 package.json                # Node.js dependencies and project scripts
+    └── 📄 tailwind.config.js          # Tailwind CSS styling and theme configuration
