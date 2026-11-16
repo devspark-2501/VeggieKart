@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Store, LogOut, PlusCircle, Trash2, Package, ClipboardList, Sparkles, CheckCircle } from "lucide-react";
+import { Store, LogOut, PlusCircle, Trash2, Package, ClipboardList, Sparkles, CheckCircle, Upload, Image as ImageIcon } from "lucide-react";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -19,7 +19,9 @@ export default function AdminDashboard() {
     price: "",
     stock_kg: "",
     special: false,
+    image: "", // Stores Base64 string
   });
+  const [imagePreview, setImagePreview] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -50,6 +52,19 @@ export default function AdminDashboard() {
     }
   };
 
+  // Handle Desktop Image File Browse & Convert to Base64
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewProduct((prev) => ({ ...prev, image: reader.result }));
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleAddProduct = async (e) => {
     e.preventDefault();
     if (!seller) return;
@@ -64,6 +79,7 @@ export default function AdminDashboard() {
           price: parseFloat(newProduct.price),
           stock_kg: parseFloat(newProduct.stock_kg),
           special: newProduct.special,
+          image: newProduct.image || null,
           vendor_email: seller.email,
           vendor_name: seller.name,
           shop_name: seller.shopName || seller.name,
@@ -75,7 +91,8 @@ export default function AdminDashboard() {
       if (res.ok) {
         const data = await res.json();
         setProducts((prev) => [...prev, data.product]);
-        setNewProduct({ name: "", price: "", stock_kg: "", special: false });
+        setNewProduct({ name: "", price: "", stock_kg: "", special: false, image: "" });
+        setImagePreview(null);
       }
     } catch (err) {
       console.error("Failed to add product:", err);
@@ -232,6 +249,32 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
+                {/* Desktop Image Browser Upload */}
+                <div>
+                  <label className="block text-[10px] font-bold uppercase text-gray-600 mb-1">
+                    Product Image (From Desktop)
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <label className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl border-2 border-dashed border-emerald-300 bg-emerald-50/50 hover:bg-emerald-50 text-emerald-800 text-xs font-semibold cursor-pointer transition-all">
+                      <Upload className="w-4 h-4 text-emerald-600" />
+                      <span>{imagePreview ? "Change Image" : "Browse Desktop"}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                      />
+                    </label>
+                    {imagePreview && (
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-10 h-10 object-cover rounded-lg border border-emerald-200 shadow-sm"
+                      />
+                    )}
+                  </div>
+                </div>
+
                 <label className="flex items-center gap-2 text-xs font-semibold text-gray-700 cursor-pointer pt-1">
                   <input
                     type="checkbox"
@@ -247,7 +290,7 @@ export default function AdminDashboard() {
                   disabled={submitting}
                   className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow transition-all cursor-pointer"
                 >
-                  {submitting ? "Adding..." : "Publish to Marketplace"}
+                  {submitting ? "Publishing..." : "Publish to Marketplace"}
                 </button>
               </form>
             </div>
@@ -270,23 +313,36 @@ export default function AdminDashboard() {
                   {products.map((item) => (
                     <div
                       key={item.id}
-                      className="p-4 rounded-xl border border-emerald-100 bg-emerald-50/40 flex justify-between items-start"
+                      className="p-4 rounded-xl border border-emerald-100 bg-emerald-50/40 flex justify-between items-center gap-3"
                     >
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-bold text-gray-900 text-sm">{item.name}</h3>
-                          {item.special && (
-                            <span className="bg-amber-400 text-gray-950 text-[9px] px-2 py-0.5 rounded-full font-extrabold flex items-center gap-0.5">
-                              <Sparkles className="w-2.5 h-2.5" /> Special
-                            </span>
-                          )}
+                      <div className="flex items-center gap-3">
+                        {item.image ? (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-14 h-14 object-cover rounded-xl border border-emerald-200 shadow-sm shrink-0"
+                          />
+                        ) : (
+                          <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-700 shrink-0">
+                            <ImageIcon className="w-6 h-6" />
+                          </div>
+                        )}
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-bold text-gray-900 text-sm">{item.name}</h3>
+                            {item.special && (
+                              <span className="bg-amber-400 text-gray-950 text-[9px] px-2 py-0.5 rounded-full font-extrabold flex items-center gap-0.5">
+                                <Sparkles className="w-2.5 h-2.5" /> Special
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs font-extrabold text-emerald-700 mt-1">
+                            ₹{item.price} / kg
+                          </p>
+                          <p className="text-[11px] text-gray-500 mt-0.5">
+                            Stock: {item.stock_kg} kg
+                          </p>
                         </div>
-                        <p className="text-xs font-extrabold text-emerald-700 mt-1">
-                          ₹{item.price} / kg
-                        </p>
-                        <p className="text-[11px] text-gray-500 mt-0.5">
-                          Stock available: {item.stock_kg} kg
-                        </p>
                       </div>
 
                       <button
