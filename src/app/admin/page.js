@@ -214,7 +214,7 @@ export default function AdminDashboard() {
                     value={newProduct.name}
                     onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
                     placeholder="e.g., Fresh Organic Tomatoes"
-                    className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-emerald-500 outline-none text-xs"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-emerald-500 outline-none text-xs text-gray-900 bg-white"
                   />
                 </div>
 
@@ -230,7 +230,7 @@ export default function AdminDashboard() {
                       value={newProduct.price}
                       onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
                       placeholder="40"
-                      className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-emerald-500 outline-none text-xs"
+                      className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-emerald-500 outline-none text-xs text-gray-900 bg-white"
                     />
                   </div>
                   <div>
@@ -244,7 +244,7 @@ export default function AdminDashboard() {
                       value={newProduct.stock_kg}
                       onChange={(e) => setNewProduct({ ...newProduct, stock_kg: e.target.value })}
                       placeholder="25"
-                      className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-emerald-500 outline-none text-xs"
+                      className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-emerald-500 outline-none text-xs text-gray-900 bg-white"
                     />
                   </div>
                 </div>
