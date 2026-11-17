@@ -13,6 +13,7 @@ export default function SearchBar({ searchQuery, setSearchQuery, placeholder = "
         placeholder={placeholder}
         className="w-full pl-10 pr-9 py-2.5 rounded-2xl bg-white border border-emerald-200 shadow-sm text-xs text-gray-800 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none transition-all"
       />
+      
       {searchQuery && (
         <button
           type="button"
