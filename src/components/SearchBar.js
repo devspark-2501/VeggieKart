@@ -4,6 +4,7 @@ import { Search, X } from "lucide-react";
 
 export default function SearchBar({ searchQuery, setSearchQuery, placeholder = "Search fresh vegetables or vendors..." }) {
   return (
+    
     <div className="mb-6 relative max-w-md">
       <Search className="w-4 h-4 text-emerald-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
       <input
